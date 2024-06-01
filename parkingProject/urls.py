@@ -13,4 +13,5 @@ router.register(r'tiket', TicketView)
 urlpatterns = [
    path('api/', include(router.urls)),
    path('api/api-auth', ObtainTokenView.as_view(), name='api-auth'),
+   path('api/searchByCel', SearchByCelView.as_view(), name='api-auth'),
 ]

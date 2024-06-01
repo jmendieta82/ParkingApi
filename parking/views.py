@@ -1,5 +1,7 @@
+from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from parking.serializers import *
 from rest_framework.authtoken.models import Token
@@ -44,3 +46,15 @@ class ObtainTokenView(ObtainAuthToken):
         user.save()
         usuario = EmployeeSerializer(user)
         return Response(usuario.data)
+
+
+class SearchByCelView(APIView):
+    def post(self, request):
+
+        data = request.data
+        phone = data['phone']
+        owners = Owner.objects.filter(
+            phone_number__contains=phone
+        )
+        owners_serializer = OwnerSerializer(owners, many=True)
+        return Response(owners_serializer.data, status=status.HTTP_200_OK)

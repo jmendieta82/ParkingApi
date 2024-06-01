@@ -3,23 +3,21 @@ from django.db import models
 
 
 class Employee(AbstractUser):
-    identification = models.CharField(max_length=11,default='',null=True,blank=True)
-    phone = models.CharField(max_length=12,default='',null=True,blank=True)
-    direction = models.CharField(max_length=255,default='',null=True,blank=True)
+    identification = models.CharField(max_length=11, default='', null=True, blank=True)
+    phone = models.CharField(max_length=12, default='', null=True, blank=True)
+    direction = models.CharField(max_length=255, default='', null=True, blank=True)
 
 
 class Owner(models.Model):
-    full_name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=20)
-    address = models.CharField(max_length=150)
+    full_name = models.CharField(max_length=100, default='', null=True, blank=True)
+    phone_number = models.CharField(max_length=20,unique=True)
 
 
 class Car(models.Model):
     owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
     license_plate = models.CharField(max_length=10)
-    brand = models.CharField(max_length=50)
-    model = models.CharField(max_length=50)
-    color = models.CharField(max_length=50)
+    brand = models.CharField(max_length=50, default='', null=True, blank=True)
+    color = models.CharField(max_length=50, default='', null=True, blank=True)
 
 
 class ParkingSpot(models.Model):
