@@ -1,3 +1,4 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from parking.models import *
@@ -28,7 +29,17 @@ class OwnerSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class BrandSerializer(ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = '__all__'
+
+
 class CarSerializer(ModelSerializer):
+    brand = BrandSerializer(read_only=True)
+    brand_id = serializers.PrimaryKeyRelatedField(write_only=True, allow_null=True, queryset=Brand.objects.all(),
+                                                  source='brand')
+
     class Meta:
         model = Car
         fields = '__all__'
@@ -41,6 +52,16 @@ class ParkingSpotSerializer(ModelSerializer):
 
 
 class TicketSerializer(ModelSerializer):
+    car = CarSerializer(read_only=True)
+    owner = OwnerSerializer(read_only=True)
+    parking_spot = ParkingSpotSerializer(read_only=True)
+    car_id = serializers.PrimaryKeyRelatedField(write_only=True, allow_null=True, queryset=Car.objects.all(),
+                                                source='car')
+    owner_id = serializers.PrimaryKeyRelatedField(write_only=True, allow_null=True, queryset=Owner.objects.all(),
+                                                  source='owner')
+    parking_spot_id = serializers.PrimaryKeyRelatedField(write_only=True, allow_null=True,
+                                                         queryset=ParkingSpot.objects.all(), source='parking_spot')
+
     class Meta:
         model = Ticket
         fields = '__all__'

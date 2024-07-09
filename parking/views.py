@@ -28,7 +28,9 @@ class ParkingSpotView(ModelViewSet):
 
 
 class TicketView(ModelViewSet):
-    queryset = Ticket.objects.all()
+    def get_queryset(self):
+        queryset = Ticket.objects.filter(parking_spot__is_occupied=False)
+        return queryset
     serializer_class = TicketSerializer
 
 
@@ -50,7 +52,6 @@ class ObtainTokenView(ObtainAuthToken):
 
 class SearchByCelView(APIView):
     def post(self, request):
-
         data = request.data
         phone = data['phone']
         owners = Owner.objects.filter(
@@ -58,3 +59,18 @@ class SearchByCelView(APIView):
         )
         owners_serializer = OwnerSerializer(owners, many=True)
         return Response(owners_serializer.data, status=status.HTTP_200_OK)
+
+
+class SearchByPlateView(APIView):
+    def post(self, request):
+        data = request.data
+        plate = data['plate']
+        cars = Car.objects.filter(
+            license_plate__contains=plate
+        )
+        cars_serializer = CarSerializer(cars, many=True)
+        return Response(cars_serializer.data, status=status.HTTP_200_OK)
+
+class BrandView(ModelViewSet):
+    queryset = Brand.objects.all().order_by('name')
+    serializer_class = BrandSerializer
