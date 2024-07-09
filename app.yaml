@@ -1,0 +1,8 @@
+runtime: python39
+service: default
+env: standard
+entrypoint: gunicorn -b :$PORT parkingProject.wsgi
+
+handlers:
+  - url: /.*
+    script: main.app
